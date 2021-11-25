@@ -18,4 +18,5 @@ export interface IArticle {
   abstract: string;
   headline: IHeadline;
   subtype: string;
+  _id: string;
 }

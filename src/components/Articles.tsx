@@ -1,30 +1,44 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { DisplayRange } from "./DisplayRange";
 import { useAppSelector } from "../app/hooks";
 import { IArticle } from "../types/app_types";
-import { getAllArticles } from "../features/articles/articlesSlice";
+import { fetchPosts, getAllArticles } from "../features/articles/articlesSlice";
 import newyorktimeslogo from "../assets/images/newyorktimeslogo.png";
+import { store } from "../app/store";
+
+store.dispatch(fetchPosts());
 
 export const Articles = () => {
   const data = useAppSelector(getAllArticles);
+
   const navigate = useNavigate();
 
-  const showMoreDetails = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, article: IArticle) => {
-    navigate("/detailed", {
+  const showMoreDetails = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    article: IArticle,
+    id: any
+  ) => {
+    navigate(`/article/${id}`, {
       state: {
         article,
       },
     });
   };
 
+  const handleError = useCallback((e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    (e.target as HTMLImageElement).onerror = null;
+    (e.target as HTMLImageElement).src = newyorktimeslogo;
+  }, []);
+
   return (
     <>
-      <DisplayRange />
+      {/* <DisplayRange /> */}
       {data.length > 0 &&
         data.map((article: IArticle, index: number) => {
-          const { pub_date, multimedia, web_url, abstract, headline } = article;
+          const { pub_date, multimedia, web_url, abstract, headline, _id } = article;
+          let id = _id.replaceAll("nyt://article/", "");
+          console.log(id);
           const date = new Date(pub_date);
           const options: Intl.DateTimeFormatOptions = {
             weekday: "long",
@@ -34,8 +48,8 @@ export const Articles = () => {
           };
 
           const correctDate = date.toLocaleDateString("en-US", options);
-          const imgUrl = "https://static01.nyt.com/";
-          const smallImg = imgUrl + multimedia.find((img) => img.subtype === "thumbnail")?.url;
+          const smallImg =
+            "https://static01.nyt.com/" + multimedia.find((img) => img.subtype === "thumbnail")?.url;
 
           return (
             <React.Fragment key={index}>
@@ -44,15 +58,7 @@ export const Articles = () => {
                   <Card className="align-items-stretch border-primary mb-3">
                     <Row className="g-0">
                       <Col md={2} className="mx-auto d-block">
-                        <img
-                          onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                            (e.target as HTMLImageElement).onerror = null;
-                            (e.target as HTMLImageElement).src = newyorktimeslogo;
-                          }}
-                          className="mt-1"
-                          src={smallImg}
-                          alt="article_image"
-                        />
+                        <img onError={handleError} className="mt-1" src={smallImg} alt="article_image" />
                       </Col>
                       <Col md={8}>
                         <Card.Body>
@@ -67,7 +73,7 @@ export const Articles = () => {
                       </Col>
                       <Col md={2}>
                         <Button
-                          onClick={(e) => showMoreDetails(e, article)}
+                          onClick={(e) => showMoreDetails(e, article, id)}
                           variant="primary"
                           className="btn px-3 mt-1 mb-1 btn">
                           See more

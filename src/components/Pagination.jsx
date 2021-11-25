@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
-import { Pagination } from "react-bootstrap";
+import { Pagination as BootstrapPagination } from "react-bootstrap";
 import { fetchPosts } from "../features/articles/articlesSlice";
 import { useAppDispatch } from "../app/hooks";
 import "../App.css";
 
-export const Paginate = ({ page }) => {
+export const Pagination = ({ page }) => {
   const dispatch = useAppDispatch();
+
+  const handlePreviousPage = () => {
+    setCurrentButton((previousBtn) => (previousBtn <= 1 ? previousBtn : previousBtn - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentButton((previousBtn) => (previousBtn >= numberOfPages.length ? previousBtn : previousBtn + 1));
+  };
 
   const numberOfPages = [];
   for (let i = 1; i <= 10; i++) {
@@ -16,7 +24,7 @@ export const Paginate = ({ page }) => {
   const [arrOfVisibleButtons, setArrOfCurrButtons] = useState([]);
 
   useEffect(() => {
-    let currentPages = [...arrOfVisibleButtons];
+    let currentPages = [arrOfVisibleButtons];
     let dots = "...";
 
     if (numberOfPages.length < 6) {
@@ -40,34 +48,28 @@ export const Paginate = ({ page }) => {
   }, [currentBtn]);
 
   return (
-    <Pagination>
-      <Pagination.First
-        className={`${currentBtn === 1 ? "disabled" : ""}`}
-        onClick={() =>
-          setCurrentButton((previousBtn) => (previousBtn <= 1 ? previousBtn : previousBtn - 1))
-        }></Pagination.First>
+    <BootstrapPagination>
+      <BootstrapPagination.First
+        className={currentBtn === 1 && "disabled"}
+        onClick={handlePreviousPage}></BootstrapPagination.First>
       {arrOfVisibleButtons.map((item, index) => {
         if (typeof item !== "string") {
           return (
-            <Pagination.Item
+            <BootstrapPagination.Item
               key={index}
-              className={`${currentBtn === item ? "active" : ""}`}
+              className={currentBtn === item && "active"}
               onClick={() => setCurrentButton(item)}>
               {item}
-            </Pagination.Item>
+            </BootstrapPagination.Item>
           );
         } else {
-          return <Pagination.Ellipsis key={index} disabled />;
+          return <BootstrapPagination.Ellipsis key={index} disabled />;
         }
       })}
-      <Pagination.Last
+      <BootstrapPagination.Last
         href="#"
-        className={`${currentBtn === numberOfPages.length ? "disabled" : ""}`}
-        onClick={() =>
-          setCurrentButton((previousBtn) =>
-            previousBtn >= numberOfPages.length ? previousBtn : previousBtn + 1
-          )
-        }></Pagination.Last>
-    </Pagination>
+        className={currentBtn === numberOfPages.length && "disabled"}
+        onClick={handleNextPage}></BootstrapPagination.Last>
+    </BootstrapPagination>
   );
 };

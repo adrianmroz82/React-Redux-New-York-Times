@@ -1,5 +1,4 @@
 import { useAppSelector } from "../app/hooks";
-import { Paginate } from "./Paginate";
 
 export const DisplayRange = () => {
   const page = useAppSelector((state) => state.articles.page);
@@ -9,7 +8,6 @@ export const DisplayRange = () => {
 
   return (
     <>
-      <Paginate page={page} />
       <h5 className="mb-3">
         Displaying articles {firstItem} - {lastItem} of 100
       </h5>
