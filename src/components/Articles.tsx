@@ -8,8 +8,6 @@ import { store } from "../app/store";
 import { Header } from "./Header";
 import { Pagination } from "./Pagination";
 import newyorktimeslogo from "../assets/images/newyorktimeslogo.png";
-// import axios from "axios";
-// import { useParams } from "react-router";
 
 store.dispatch(fetchPosts());
 
@@ -18,15 +16,9 @@ export const Articles = () => {
   const page = useAppSelector(getPage);
 
   const navigate = useNavigate();
-  // const yourApiKey = "TqbXjcy6d60sNQ7GjZPsIguZVU91BrN5";
-  // const baseUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-  // const id = useParams();
 
-  const showMoreDetails = async (article: IArticle, _id: string) => {
+  const showMoreDetails = (article: IArticle, _id: string) => {
     let id = _id.replaceAll(/nyt:\/\//g, "");
-    // const response = await axios.get(`${baseUrl}?q=${id}&api-key=${yourApiKey}`);
-    // return response.data
-    // console.log(response);
     navigate(`${id}`, {
       state: {
         article,
@@ -81,7 +73,7 @@ export const Articles = () => {
                         <Button
                           onClick={() => showMoreDetails(article, _id)}
                           variant="primary"
-                          className="btn px-3 my-1">
+                          className="x-3 my-1">
                           See more
                         </Button>
                       </Col>
