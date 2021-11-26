@@ -1,10 +1,10 @@
-export interface IMultimedia {
+interface IMultimedia {
   subtype: string;
   url: string;
   type: string;
 }
 
-export interface IHeadline {
+interface IHeadline {
   main: string;
 }
 

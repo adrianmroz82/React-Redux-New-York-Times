@@ -1,9 +1,12 @@
 import { useAppSelector } from "../app/hooks";
-import { getData } from "../features/articles/articlesSlice";
+import { getCopyright } from "../features/articles/articlesSlice";
 
 export const Footer = () => {
-  const data = useAppSelector(getData);
-  const footer = data.copyright;
+  const copyright = useAppSelector(getCopyright);
 
-  return <footer className="m-4">{footer}</footer>;
+  return (
+    <>
+      <footer className="m-4">{copyright}</footer>
+    </>
+  );
 };

@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { useParams } from "react-router";
 import { RootState } from "../../app/store";
 import { IState } from "../../app/store_types";
 
@@ -10,22 +9,19 @@ const initialState: IState = {
   status: "initial",
   error: undefined,
   page: 1,
+  copyright: "",
 };
-
-// type idType = {
-//   id: string | any;
-// };
 
 const yourApiKey = "TqbXjcy6d60sNQ7GjZPsIguZVU91BrN5";
 const baseUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 const subject = "sports";
 
 export const fetchPosts = createAsyncThunk("articles/fetchPosts", async (page) => {
-  // const { id }: string | any = useParams();
-  // console.log(id);
   const response = await axios.get(`${baseUrl}?q=${subject}&api-key=${yourApiKey}&page=${page}`);
-
-  return response.data;
+  return {
+    data: response.data,
+    page,
+  };
 });
 
 const articlesSlice = createSlice({
@@ -37,11 +33,11 @@ const articlesSlice = createSlice({
       .addCase(fetchPosts.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
+      .addCase(fetchPosts.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.articles = action.payload.response.docs;
-        state.data = action.payload;
-        state.page = action.meta.arg;
+        state.articles = payload.data.response.docs;
+        state.page = payload.page;
+        state.copyright = payload.data.copyright;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
@@ -52,5 +48,5 @@ const articlesSlice = createSlice({
 
 export const getPage = (state: RootState) => state.articles.page;
 export const getAllArticles = (state: RootState) => state.articles.articles;
-export const getData = (state: RootState) => state.articles.data;
+export const getCopyright = (state: RootState) => state.articles.copyright;
 export default articlesSlice.reducer;

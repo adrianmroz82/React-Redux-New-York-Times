@@ -3,23 +3,31 @@ import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { IArticle } from "../types/app_types";
-import { fetchPosts, getAllArticles } from "../features/articles/articlesSlice";
-import newyorktimeslogo from "../assets/images/newyorktimeslogo.png";
+import { fetchPosts, getAllArticles, getPage } from "../features/articles/articlesSlice";
 import { store } from "../app/store";
+import { Header } from "./Header";
+import { Pagination } from "./Pagination";
+import newyorktimeslogo from "../assets/images/newyorktimeslogo.png";
+// import axios from "axios";
+// import { useParams } from "react-router";
 
 store.dispatch(fetchPosts());
 
 export const Articles = () => {
   const data = useAppSelector(getAllArticles);
+  const page = useAppSelector(getPage);
 
   const navigate = useNavigate();
+  // const yourApiKey = "TqbXjcy6d60sNQ7GjZPsIguZVU91BrN5";
+  // const baseUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+  // const id = useParams();
 
-  const showMoreDetails = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    article: IArticle,
-    id: any
-  ) => {
-    navigate(`/article/${id}`, {
+  const showMoreDetails = async (article: IArticle, _id: string) => {
+    let id = _id.replaceAll(/nyt:\/\//g, "");
+    // const response = await axios.get(`${baseUrl}?q=${id}&api-key=${yourApiKey}`);
+    // return response.data
+    // console.log(response);
+    navigate(`${id}`, {
       state: {
         article,
       },
@@ -33,12 +41,10 @@ export const Articles = () => {
 
   return (
     <>
-      {/* <DisplayRange /> */}
+      <Header />
       {data.length > 0 &&
         data.map((article: IArticle, index: number) => {
           const { pub_date, multimedia, web_url, abstract, headline, _id } = article;
-          let id = _id.replaceAll("nyt://article/", "");
-          console.log(id);
           const date = new Date(pub_date);
           const options: Intl.DateTimeFormatOptions = {
             weekday: "long",
@@ -73,9 +79,9 @@ export const Articles = () => {
                       </Col>
                       <Col md={2}>
                         <Button
-                          onClick={(e) => showMoreDetails(e, article, id)}
+                          onClick={() => showMoreDetails(article, _id)}
                           variant="primary"
-                          className="btn px-3 mt-1 mb-1 btn">
+                          className="btn px-3 my-1">
                           See more
                         </Button>
                       </Col>
@@ -86,6 +92,7 @@ export const Articles = () => {
             </React.Fragment>
           );
         })}
+      <Pagination page={page} />
     </>
   );
 };

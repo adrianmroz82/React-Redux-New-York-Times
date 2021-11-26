@@ -3,5 +3,6 @@ export interface IState {
   articles: [];
   status: string;
   error: string | undefined;
-  page: any;
+  page: number | any;
+  copyright: string;
 }

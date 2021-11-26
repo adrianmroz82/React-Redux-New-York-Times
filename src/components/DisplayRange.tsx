@@ -1,7 +1,8 @@
 import { useAppSelector } from "../app/hooks";
+import { getPage } from "../features/articles/articlesSlice";
 
 export const DisplayRange = () => {
-  const page = useAppSelector((state) => state.articles.page);
+  const page = useAppSelector(getPage);
 
   let firstItem = 10 * (page - 1) + 1;
   let lastItem = page * 10;

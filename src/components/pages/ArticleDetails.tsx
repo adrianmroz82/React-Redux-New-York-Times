@@ -20,12 +20,12 @@ export const ArticleDetails = () => {
   };
 
   return (
-    <Card className="mx-5">
+    <Card className="mx-5 mt-3">
       <Card.Title className="mt-3">Section: {article.section_name}</Card.Title>
       <Card.Text>Published {article.byline.original}</Card.Text>
-      <Card.Text className="mx-5 mb-3">{article.lead_paragraph}</Card.Text>
+      <Card.Text className="mx-3 mb-3">{article.lead_paragraph}</Card.Text>
       <CardImg src={largeImg} alt={article.multimedia[0].type}></CardImg>
-      <Button className="mb-3" onClick={handleClick}>
+      <Button className="mb-3 mt-3" onClick={handleClick}>
         Go back to all Articles
       </Button>
     </Card>
