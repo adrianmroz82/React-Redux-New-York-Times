@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Card, CardImg } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { IArticle } from "../../types/app_types";
+import { useCallback } from "react";
 
 export const ArticleDetails = () => {
   const navigate = useNavigate();
@@ -15,9 +16,9 @@ export const ArticleDetails = () => {
     article.byline.original = "";
   }
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     navigate(-1);
-  };
+  }, []);
 
   return (
     <Card className="mx-5 mt-3">

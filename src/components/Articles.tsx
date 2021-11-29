@@ -1,25 +1,28 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { IArticle } from "../types/app_types";
 import { fetchPosts, getAllArticles, getPage } from "../features/articles/articlesSlice";
-import { store } from "../app/store";
 import { Header } from "./Header";
 import { Pagination } from "./Pagination";
 import newyorktimeslogo from "../assets/images/newyorktimeslogo.png";
-
-store.dispatch(fetchPosts());
+import { useDispatch } from "react-redux";
 
 export const Articles = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const data = useAppSelector(getAllArticles);
   const page = useAppSelector(getPage);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(fetchPosts(page));
+  }, []);
 
   const showMoreDetails = (article: IArticle, _id: string) => {
     let id = _id.replaceAll(/nyt:\/\//g, "");
-    navigate(`${id}`, {
+    navigate(id, {
       state: {
         article,
       },
@@ -30,6 +33,8 @@ export const Articles = () => {
     (e.target as HTMLImageElement).onerror = null;
     (e.target as HTMLImageElement).src = newyorktimeslogo;
   }, []);
+
+  const handleShowMore = useCallback((article, _id) => () => showMoreDetails(article, _id), []);
 
   return (
     <>
@@ -65,15 +70,12 @@ export const Articles = () => {
                           </Card.Link>
                           <Card.Text>{abstract}</Card.Text>
                           <Card.Text>
-                            <small className="text-muted">Pulishsed on {correctDate}</small>
+                            <small className="text-muted">Published on {correctDate}</small>
                           </Card.Text>
                         </Card.Body>
                       </Col>
                       <Col md={2}>
-                        <Button
-                          onClick={() => showMoreDetails(article, _id)}
-                          variant="primary"
-                          className="x-3 my-1">
+                        <Button onClick={handleShowMore(article, _id)} variant="primary" className="x-3 my-1">
                           See more
                         </Button>
                       </Col>

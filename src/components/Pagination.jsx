@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Pagination as BootstrapPagination } from "react-bootstrap";
 import { fetchPosts } from "../features/articles/articlesSlice";
 import { useAppDispatch } from "../app/hooks";
@@ -7,13 +7,15 @@ import "../App.css";
 export const Pagination = ({ page }) => {
   const dispatch = useAppDispatch();
 
-  const handlePreviousPage = () => {
+  const handlePreviousPage = useCallback(() => {
     setCurrentButton((previousBtn) => (previousBtn <= 1 ? previousBtn : previousBtn - 1));
-  };
+  }, []);
 
-  const handleNextPage = () => {
+  const handleNextPage = useCallback(() => {
     setCurrentButton((previousBtn) => (previousBtn >= numberOfPages.length ? previousBtn : previousBtn + 1));
-  };
+  }, []);
+
+  const handleCurrentPage = useCallback((item) => () => setCurrentButton(item), []);
 
   const numberOfPages = [];
   for (let i = 1; i <= 10; i++) {
@@ -24,7 +26,7 @@ export const Pagination = ({ page }) => {
   const [arrOfVisibleButtons, setArrOfCurrButtons] = useState([]);
 
   useEffect(() => {
-    let currentPages = [arrOfVisibleButtons];
+    let currentPages = [];
     let dots = "...";
 
     if (numberOfPages.length < 6) {
@@ -45,7 +47,6 @@ export const Pagination = ({ page }) => {
 
     setArrOfCurrButtons(currentPages);
     dispatch(fetchPosts(currentBtn));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentBtn]);
 
   return (
@@ -59,7 +60,7 @@ export const Pagination = ({ page }) => {
             <BootstrapPagination.Item
               key={index}
               className={currentBtn === item && "active"}
-              onClick={() => setCurrentButton(item)}>
+              onClick={handleCurrentPage(item)}>
               {item}
             </BootstrapPagination.Item>
           );

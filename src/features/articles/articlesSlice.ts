@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { RootState } from "../../app/store";
 import { IState } from "../../app/store_types";
+import axios from "axios";
 
 const initialState: IState = {
   data: {},
@@ -16,7 +16,7 @@ const yourApiKey = "TqbXjcy6d60sNQ7GjZPsIguZVU91BrN5";
 const baseUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 const subject = "sports";
 
-export const fetchPosts = createAsyncThunk("articles/fetchPosts", async (page) => {
+export const fetchPosts = createAsyncThunk("articles/fetchPosts", async (page: number) => {
   const response = await axios.get(`${baseUrl}?q=${subject}&api-key=${yourApiKey}&page=${page}`);
   return {
     data: response.data,
