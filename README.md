@@ -1,4 +1,6 @@
-This application, which is using New York Times API was primarly created with Vanilla JavaScript and then recreated using React/Redux-Toolkit/TypeScript/Bootstrap. Pagination has been customized by adding Elipsis components
+# This project was created during my internship and had to meet mentor's demands.
+
+An application, which is using New York Times API was primarly created with Vanilla JavaScript and then recreated using React/Redux-Toolkit/TypeScript/Bootstrap. Pagination has been customized by adding Elipsis components
 
 ## Available Scripts
 
